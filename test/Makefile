@@ -453,7 +453,7 @@ stop-approve-matic: ## Stops approve in node container
 	$(STOPAPPROVE)
 
 .PHONY: run
-run: ## Runs a full node
+run: ## Runs a full node, if you want to run real prover, please annotate $(RUNZKPROVER)
 	$(RUNSTATEDB)
 	$(RUNPOOLDB)
 	$(RUNEVENTDB)
@@ -474,6 +474,14 @@ run: ## Runs a full node
 .PHONY: stop
 stop: ## Stops all services
 	$(STOP)
+
+.PHONY: run-sequence-sender
+run-sequence-sender:
+       ${RUNSEQUENCESENDER}
+
+.PHONY: stop-sequence-sender
+stop-sequence-sender:
+       ${STOPSEQUENCESENDER}
 
 .PHONY: ship
 ship: ## Builds docker images and run them

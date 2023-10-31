@@ -1,0 +1,36 @@
+version: "3.5"
+networks:
+  default:
+    name: zkevm-full-prover
+
+services:
+  zkevm-prover:
+    container_name: zkevm-prover
+    image: hermeznetwork/zkevm-prover:v2.2.5
+    ports:
+      - 50061:50061 # MT
+      - 50071:50071 # Executor
+    volumes:
+      - /app/full_prover_config/config_prover.json:/app/config_prover.json
+      - /app/full_prover_config/config:/app/config
+    command: >
+      zkProver -c /app/config_prover.json
+  zkevm-prover-db:
+    container_name: zkevm-prover-db
+    image: postgres:15
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+    volumes:
+      - /app/full_prover_config/init_prover_db.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=prover_password
+    ports:
+      - 5432:5432
+    command:
+      - "postgres"
+      - "-N"
+      - "500"
